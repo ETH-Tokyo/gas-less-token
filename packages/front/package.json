@@ -18,6 +18,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "ethers": "5.6.8",
     "@mui/material": "^5.10.13",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
