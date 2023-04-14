@@ -36,9 +36,6 @@
     "simple-git-hooks": "^2.8.1",
     "solhint": "^3.3.7"
   },
-  "dependencies": {
-    "typescript": "^4.3.5"
-  },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
   }

@@ -31,6 +31,9 @@ module.exports = {
     "**/dist/",
     "**/*.sol",
     "**/*.md",
+    "**/*.svg",
+    "**/*.ico",
+    "**/*.css",
   ],
   rules: {
     "no-console": "off",
