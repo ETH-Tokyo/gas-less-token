@@ -1,6 +1,6 @@
-import { ethers } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import 'dotenv/config'
+import { ethers } from 'hardhat'
 
 async function main() {
   const ENTRY_POINT_ADDRESS = process.env.ENTRY_POINT_ADDRESS

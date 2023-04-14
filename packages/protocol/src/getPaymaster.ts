@@ -1,5 +1,5 @@
-import { PaymasterAPI } from '@account-abstraction/sdk'
 import { UserOperationStruct } from '@account-abstraction/contracts'
+import { PaymasterAPI } from '@account-abstraction/sdk'
 import 'dotenv/config'
 
 const PAYMASTER_AND_DATA = process.env.PAYMASTER_ADDRESS

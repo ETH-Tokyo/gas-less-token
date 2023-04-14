@@ -1,13 +1,13 @@
-import '@typechain/hardhat'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-etherscan'
-import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-solhint'
-import 'solidity-coverage'
+import '@nomiclabs/hardhat-waffle'
+import '@typechain/hardhat'
+import 'dotenv/config'
+import 'hardhat-contract-sizer'
 import 'hardhat-gas-reporter'
 import 'hardhat-interface-generator'
-import 'hardhat-contract-sizer'
-import 'dotenv/config'
+import 'solidity-coverage'
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY
 const PRIVATE_KEY = process.env.PRIVATE_KEY
