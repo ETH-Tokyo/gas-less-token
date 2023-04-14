@@ -154,7 +154,7 @@ const CreateTokenPaymaster: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout pageTitle="createtokenpaymaster">
-        <main className="">
+        <main className="p-32">
           <div className="">
             <FactoryForm />
           </div>
