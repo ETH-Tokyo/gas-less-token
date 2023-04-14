@@ -45,10 +45,7 @@ const useAccount = (): Account => {
       ethers.utils.toUtf8Bytes(secretPhrase),
     );
     const provider = new ethers.providers.JsonRpcProvider(RPC_ENDPOINT);
-    const paymasterAPI = getVerifyingPaymaster(
-      paymaster,
-      process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS!,
-    );
+    const paymasterAPI = getVerifyingPaymaster(paymaster);
     const accountAPI = getSimpleAccount(
       provider,
       privateKey!,
