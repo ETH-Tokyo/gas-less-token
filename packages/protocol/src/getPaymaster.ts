@@ -1,22 +1,16 @@
 import { UserOperationStruct } from '@account-abstraction/contracts'
 import { PaymasterAPI } from '@account-abstraction/sdk'
-import 'dotenv/config'
-
-const PAYMASTER_AND_DATA = process.env.PAYMASTER_ADDRESS
 
 class VerifyingPaymasterAPI extends PaymasterAPI {
-  private paymasterUrl: string
-  private entryPoint: string
-  constructor(paymasterUrl: string, entryPoint: string) {
+  private paymaster: string
+  constructor(paymasterUrl: string) {
     super()
-    this.paymasterUrl = paymasterUrl
-    this.entryPoint = entryPoint
+    this.paymaster = paymasterUrl
   }
 
   async getPaymasterAndData(userOp: Partial<UserOperationStruct>): Promise<string> {
-    return PAYMASTER_AND_DATA!
+    return this.paymaster
   }
 }
 
-export const getVerifyingPaymaster = (paymasterUrl: string, entryPoint: string) =>
-  new VerifyingPaymasterAPI(paymasterUrl, entryPoint)
+export const getVerifyingPaymaster = (paymaster: string) => new VerifyingPaymasterAPI(paymaster)

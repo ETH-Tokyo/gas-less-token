@@ -1,10 +1,11 @@
 import config from '../../config.json'
 import { ERC20_ABI, getVerifyingPaymaster, getSimpleAccount, getGasFee, printOp, getHttpRpcClient } from '../../src'
+import 'dotenv/config'
 import { ethers } from 'ethers'
 
 export default async function main(tkn: string, t: string, amt: string, withPM: boolean) {
   const provider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
-  const paymasterAPI = withPM ? getVerifyingPaymaster(config.paymasterUrl, config.entryPoint) : undefined
+  const paymasterAPI = withPM ? getVerifyingPaymaster(process.env.PAYMASTER_ADDRESS!) : undefined
   const accountAPI = getSimpleAccount(
     provider,
     config.signingKey,
