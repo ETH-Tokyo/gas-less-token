@@ -6,50 +6,46 @@ import {
   getVerifyingPaymaster,
   printOp,
 } from "protocol/index";
-import { useState } from "react";
 
 type Account = {
-  privateKey?: string;
-  publicAddress?: string;
-  initAccount?: (secretPhrase: string) => void;
-  sendEth?: (to: string, amount: number, paymaster: string) => Promise<string>;
+  initAccount: (secretPhrase: string) => Promise<string>;
+  sendEth: (
+    secretPhrase: string,
+    to: string,
+    amount: number,
+    paymaster: string,
+  ) => Promise<string>;
 };
 
-const useAccount = (secretPhrase: string): Account => {
+const useAccount = (): Account => {
   const RPC_ENDPOINT = `https://node.stackup.sh/v1/rpc/${process.env
     .NEXT_PUBLIC_STACK_UP_KEY!}`;
 
-  const [privateKey, setPrivateKey] = useState<string>();
-  const [publicAddress, setPublicAddress] = useState<string>();
-
-  const initAccount = async () => {
-    const _privateKey = ethers.utils.keccak256(
+  const initAccount = async (secretPhrase: string): Promise<string> => {
+    const privateKey = ethers.utils.keccak256(
       ethers.utils.toUtf8Bytes(secretPhrase),
     );
-
     const provider = new ethers.providers.JsonRpcProvider(RPC_ENDPOINT);
     const accountAPI = getSimpleAccount(
       provider,
-      _privateKey,
+      privateKey,
       process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS!,
       process.env.NEXT_PUBLIC_SIMPLE_ACCOUNT_FACTORY_ADDRESS!,
     );
-    const _publicAddress = await accountAPI.getCounterFactualAddress();
-
-    setPrivateKey(_privateKey);
-    setPublicAddress(_publicAddress);
+    return await accountAPI.getCounterFactualAddress();
   };
 
   const sendEth = async (
+    secretPhrase: string,
     to: string,
     amount: number,
     paymaster: string,
   ): Promise<string> => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_ENDPOINT);
-    const paymasterAPI = getVerifyingPaymaster(
-      paymaster,
-      process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS!,
+    const privateKey = ethers.utils.keccak256(
+      ethers.utils.toUtf8Bytes(secretPhrase),
     );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_ENDPOINT);
+    const paymasterAPI = getVerifyingPaymaster(paymaster);
     const accountAPI = getSimpleAccount(
       provider,
       privateKey!,
@@ -87,8 +83,6 @@ const useAccount = (secretPhrase: string): Account => {
   };
 
   return {
-    privateKey,
-    publicAddress,
     initAccount,
     sendEth,
   };
