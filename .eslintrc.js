@@ -38,6 +38,7 @@ module.exports = {
   rules: {
     "no-console": "off",
     "prefer-const": "warn",
+    "no-extra-boolean-cast": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-inferrable-types": "warn",
     "@typescript-eslint/no-unnecessary-type-assertion": "off",

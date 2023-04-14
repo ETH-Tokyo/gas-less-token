@@ -1,15 +1,6 @@
-import {
-  Alert,
-  Button,
-  Checkbox,
-  createTheme,
-  FormControlLabel,
-  TextField,
-  ThemeProvider,
-} from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -17,7 +8,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Layout from "@/components/layout/baseLayout";
 
 type FormInput = {
-  paymaster_name: string;
   token_symbol: string;
   eth_per_token: string;
 };
@@ -32,7 +22,6 @@ const FactoryForm: FC = () => {
     formState: { errors },
   } = useForm<FormInput>({
     defaultValues: {
-      paymaster_name: "",
       token_symbol: "",
       eth_per_token: "",
     },
@@ -92,7 +81,69 @@ const FactoryForm: FC = () => {
     }
   };
 
-  return <></>;
+  return (
+    <div>
+      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="token_symbol"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              sx={{ mb: 1 }}
+              variant="filled"
+              label="Token symbol"
+              disabled={!!sendStatus}
+              {...register("token_symbol", {
+                required: "token symbol is required",
+              })}
+              error={!!errors.token_symbol}
+              helperText={
+                errors?.token_symbol ? errors.token_symbol.message : "\u00a0"
+              }
+              {...field}
+            />
+          )}
+        />
+
+        <Controller
+          name="eth_per_token"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              sx={{ mb: 1 }}
+              variant="filled"
+              label="ETH per token"
+              disabled={!!sendStatus}
+              {...register("eth_per_token", {
+                required: "You must choose a rate (per unit token, in ETH)",
+              })}
+              error={!!errors.eth_per_token}
+              helperText={
+                errors?.eth_per_token ? errors.eth_per_token.message : "\u00a0"
+              }
+              {...field}
+            />
+          )}
+        />
+
+        <PopupAlerts status={sendStatus} />
+        <div className="mx-auto">
+          <Button
+            type="submit"
+            variant="outlined"
+            color="inherit"
+            disabled={!!sendStatus}
+          >
+            {!!sendStatus
+              ? sendStatus == 2
+                ? "Submitted"
+                : "Submitting"
+              : "Send"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 const CreateTokenPaymaster: NextPage = () => {
@@ -104,7 +155,9 @@ const CreateTokenPaymaster: NextPage = () => {
       </Head>
       <Layout pageTitle="createtokenpaymaster">
         <main className="">
-          <div className=""></div>
+          <div className="">
+            <FactoryForm />
+          </div>
         </main>
       </Layout>
     </>
