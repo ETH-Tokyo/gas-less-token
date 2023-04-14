@@ -29,6 +29,8 @@ module.exports = {
     "**/types/truffle-contracts",
     "**/coverage",
     "**/dist/",
+    "**/*.sol",
+    "**/*.md",
   ],
   rules: {
     "no-console": "off",
@@ -49,6 +51,7 @@ module.exports = {
     {
       files: "*",
       rules: {
+        "@typescript-eslint/ban-ts-comment": "warn",
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/restrict-template-expressions": "off",
@@ -67,10 +70,11 @@ module.exports = {
       // otherwise it will raise an error in every JavaScript file
       files: ["*.ts"],
       rules: {
+        "@typescript-eslint/ban-ts-comment": "warn",
         "@typescript-eslint/prefer-ts-expect-error": "off",
         // allow using '${val}' with numbers, bool and null types
         "@typescript-eslint/restrict-template-expressions": [
-          "error",
+          "warn",
           {
             allowNumber: true,
             allowBoolean: true,
