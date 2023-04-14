@@ -1,0 +1,39 @@
+name: Build
+on: push
+
+env:
+  TS_NODE_TRANSPILE_ONLY: 1
+  FORCE_COLORS: 1
+
+# todo: extract shared seto/checkout/install/compile, instead of repeat in each job.
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies${{ hashFiles('yarn.lock') }}
+      - run: yarn lint
+      - run: yarn prettier:check
