@@ -1,20 +1,26 @@
-import { Alert, Button, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  createTheme,
+  FormControlLabel,
+  TextField,
+  ThemeProvider,
+} from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import Layout from "@/components/layout/baseLayout";
-import { useAccount } from "@/hooks/useAccount";
 
 type FormInput = {
   seed_uuid: string;
-  token_symbol: string;
-  eth_per_token: string;
 };
 
-const FactoryForm: FC = () => {
+const UserForm: FC = () => {
   const router = useRouter();
 
   const {
@@ -24,13 +30,11 @@ const FactoryForm: FC = () => {
     formState: { errors },
   } = useForm<FormInput>({
     defaultValues: {
-      token_symbol: "",
-      eth_per_token: "",
+      seed_uuid: "",
     },
   });
 
   const [sendStatus, setSendStatus] = useState<number>(0);
-
   const PopupAlerts = (props: { status: number }) => {
     if (props.status == 1) {
       return <Alert severity="info">Submitting request, hold on...</Alert>;
@@ -68,7 +72,7 @@ const FactoryForm: FC = () => {
       setSendStatus(1);
 
       // send to endpoint
-      fetch("/api/create-tokenpaymaster", {
+      fetch("/api/send-tx", {
         method: "POST",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
@@ -88,40 +92,20 @@ const FactoryForm: FC = () => {
     <div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="token_symbol"
+          name="seed_uuid"
           control={control}
           render={({ field }) => (
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="Token symbol"
+              label="貴方しか思いつかない文字列を記入してください。貴方の固有識別子となります"
               disabled={!!sendStatus}
-              {...register("token_symbol", {
+              {...register("seed_uuid", {
                 required: "token symbol is required",
               })}
-              error={!!errors.token_symbol}
+              error={!!errors.seed_uuid}
               helperText={
-                errors?.token_symbol ? errors.token_symbol.message : "\u00a0"
-              }
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="eth_per_token"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              sx={{ mb: 1 }}
-              variant="filled"
-              label="ETH per token"
-              disabled={!!sendStatus}
-              {...register("eth_per_token", {
-                required: "You must choose a rate (per unit token, in ETH)",
-              })}
-              error={!!errors.eth_per_token}
-              helperText={
-                errors?.eth_per_token ? errors.eth_per_token.message : "\u00a0"
+                errors?.seed_uuid ? errors.seed_uuid.message : "\u00a0"
               }
               {...field}
             />
@@ -146,18 +130,17 @@ const FactoryForm: FC = () => {
     </div>
   );
 };
-
-const CreateTokenPaymaster: NextPage = () => {
+const CreateContractWallet: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Create Community</title>
+        <title>Send Gasless tx</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout pageTitle="createtokenpaymaster">
+      <Layout pageTitle="sendtx">
         <main className="">
           <div className="">
-            <FactoryForm />
+            <UserForm />
           </div>
         </main>
       </Layout>
@@ -165,4 +148,4 @@ const CreateTokenPaymaster: NextPage = () => {
   );
 };
 
-export default CreateTokenPaymaster;
+export default CreateContractWallet;
