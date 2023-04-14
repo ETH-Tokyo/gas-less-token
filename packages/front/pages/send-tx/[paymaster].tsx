@@ -1,20 +1,12 @@
-import {
-  Alert,
-  Button,
-  Checkbox,
-  createTheme,
-  FormControlLabel,
-  TextField,
-  ThemeProvider,
-} from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import Layout from "@/components/layout/baseLayout";
+import { useAccount } from "@/hooks/useAccount";
 
 type FormInput = {
   seed_uuid: string;
@@ -22,6 +14,9 @@ type FormInput = {
 
 const UserForm: FC = () => {
   const router = useRouter();
+  const { paymaster } = router.query;
+  const { sendEth } = useAccount();
+  const [txHash, setTxHash] = useState<string>("");
 
   const {
     register,
@@ -67,24 +62,18 @@ const UserForm: FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => {
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
     if (!sendStatus) {
       setSendStatus(1);
 
-      // send to endpoint
-      fetch("/api/send-tx", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      }).then((res) => {
-        if (res.status === 201) {
-          setSendStatus(2);
-        } else if (res.status >= 400) {
-          // unsuccessful inquiries trigger error message
-          setSendStatus(3);
-          throw new Error(`${res.status}, ${res.statusText}`);
-        }
-      });
+      const txHash = await sendEth(
+        data.seed_uuid,
+        paymaster as string,
+        1,
+        paymaster as string,
+      );
+      setTxHash(txHash);
+      setSendStatus(2);
     }
   };
 
@@ -127,6 +116,7 @@ const UserForm: FC = () => {
           </Button>
         </div>
       </form>
+      <div>{txHash}</div>
     </div>
   );
 };
