@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type SubmittedRecord = {
-  paymaster_name: string;
   token_symbol: string;
   eth_per_token: string;
 };
@@ -26,9 +25,9 @@ export default async function handler(
         return res.status(400).end("Missing application form.");
       }
       console.log(newPaymaster);
-      const { paymaster_name, token_symbol, eth_per_token } = newPaymaster;
+      const { token_symbol, eth_per_token } = newPaymaster;
 
-      if (!(paymaster_name && token_symbol && eth_per_token)) {
+      if (!(token_symbol && eth_per_token)) {
         return res.status(400).end("Missing required fields.");
       }
       console.log("New submission: ", newPaymaster);
