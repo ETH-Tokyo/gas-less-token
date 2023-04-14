@@ -1,0 +1,16 @@
+{
+  "name": "gas-less-token",
+  "description": "",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "protocol": "yarn workspace protocol",
+    "front": "yarn workspace front"
+  }
+}
