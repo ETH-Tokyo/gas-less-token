@@ -14,7 +14,6 @@ import "./IStakeManager.sol";
 import "./IAggregator.sol";
 
 interface IEntryPoint is IStakeManager {
-
     /***
      * An event emitted after each successful request
      * @param userOpHash - unique identifier for the request (hash its entire content, except signature).
@@ -25,7 +24,15 @@ interface IEntryPoint is IStakeManager {
      * @param actualGasCost - actual amount paid (by account or paymaster) for this UserOperation.
      * @param actualGasUsed - total gas used by this UserOperation (including preVerification, creation, validation and execution).
      */
-    event UserOperationEvent(bytes32 indexed userOpHash, address indexed sender, address indexed paymaster, uint256 nonce, bool success, uint256 actualGasCost, uint256 actualGasUsed);
+    event UserOperationEvent(
+        bytes32 indexed userOpHash,
+        address indexed sender,
+        address indexed paymaster,
+        uint256 nonce,
+        bool success,
+        uint256 actualGasCost,
+        uint256 actualGasUsed
+    );
 
     /**
      * account "sender" was deployed.
@@ -43,7 +50,12 @@ interface IEntryPoint is IStakeManager {
      * @param nonce the nonce used in the request
      * @param revertReason - the return bytes from the (reverted) call to "callData".
      */
-    event UserOperationRevertReason(bytes32 indexed userOpHash, address indexed sender, uint256 nonce, bytes revertReason);
+    event UserOperationRevertReason(
+        bytes32 indexed userOpHash,
+        address indexed sender,
+        uint256 nonce,
+        bytes revertReason
+    );
 
     /**
      * signature aggregator used by the following UserOperationEvents within this bundle.
@@ -74,8 +86,7 @@ interface IEntryPoint is IStakeManager {
      * @param factoryInfo stake information about the factory (if any)
      * @param paymasterInfo stake information about the paymaster (if any)
      */
-    error ValidationResult(ReturnInfo returnInfo,
-        StakeInfo senderInfo, StakeInfo factoryInfo, StakeInfo paymasterInfo);
+    error ValidationResult(ReturnInfo returnInfo, StakeInfo senderInfo, StakeInfo factoryInfo, StakeInfo paymasterInfo);
 
     /**
      * Successful result from simulateValidation, if the account returns a signature aggregator
@@ -86,9 +97,13 @@ interface IEntryPoint is IStakeManager {
      * @param aggregatorInfo signature aggregation info (if the account requires signature aggregator)
      *      bundler MUST use it to verify the signature, or reject the UserOperation
      */
-    error ValidationResultWithAggregation(ReturnInfo returnInfo,
-        StakeInfo senderInfo, StakeInfo factoryInfo, StakeInfo paymasterInfo,
-        AggregatorStakeInfo aggregatorInfo);
+    error ValidationResultWithAggregation(
+        ReturnInfo returnInfo,
+        StakeInfo senderInfo,
+        StakeInfo factoryInfo,
+        StakeInfo paymasterInfo,
+        AggregatorStakeInfo aggregatorInfo
+    );
 
     /**
      * return value of getSenderAddress
@@ -98,12 +113,18 @@ interface IEntryPoint is IStakeManager {
     /**
      * return value of simulateHandleOp
      */
-    error ExecutionResult(uint256 preOpGas, uint256 paid, uint48 validAfter, uint48 validUntil, bool targetSuccess, bytes targetResult);
+    error ExecutionResult(
+        uint256 preOpGas,
+        uint256 paid,
+        uint48 validAfter,
+        uint48 validUntil,
+        bool targetSuccess,
+        bytes targetResult
+    );
 
     //UserOps handled, per aggregator
     struct UserOpsPerAggregator {
         UserOperation[] userOps;
-
         // aggregator address
         IAggregator aggregator;
         // aggregated signature
@@ -179,7 +200,6 @@ interface IEntryPoint is IStakeManager {
      */
     function getSenderAddress(bytes memory initCode) external;
 
-
     /**
      * simulate full execution of a UserOperation (including both validation and target execution)
      * this method will always revert with "ExecutionResult".
@@ -195,4 +215,3 @@ interface IEntryPoint is IStakeManager {
      */
     function simulateHandleOp(UserOperation calldata op, address target, bytes calldata targetCallData) external;
 }
-

@@ -1,7 +1,7 @@
+import { ethers } from 'ethers'
 import fs from 'fs/promises'
 import path from 'path'
 import prettier from 'prettier'
-import { ethers } from 'ethers'
 
 const INIT_CONFIG = {
   bundlerUrl: 'https://node.stackup.sh/v1/rpc/<API-KEY>',

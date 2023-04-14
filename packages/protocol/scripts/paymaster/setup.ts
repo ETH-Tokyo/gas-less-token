@@ -1,7 +1,7 @@
-import { ethers } from 'hardhat'
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { TokenPaymaster__factory } from '../../typechain-types'
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import 'dotenv/config'
+import { ethers } from 'hardhat'
 
 async function main() {
   const PAYMASTER_ADDRESS = process.env.PAYMASTER_ADDRESS
