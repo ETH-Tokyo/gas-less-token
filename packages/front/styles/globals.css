@@ -4,29 +4,29 @@
 
 @layer base {
   body {
-    @apply bg-brand-onyx text-base font-light text-brand-white desktop:text-xl;
+    @apply bg-neutral-200 text-base font-light text-neutral desktop:text-xl;
   }
   h1 {
-    @apply font-dazzle text-5xl font-medium tracking-wider desktop:text-8xl;
+    @apply text-5xl font-medium tracking-wider desktop:text-8xl;
   }
   h2 {
-    @apply font-dazzle text-xl font-light tracking-wide desktop:text-3xl;
+    @apply text-xl font-light tracking-wide desktop:text-3xl;
   }
   h3 {
-    @apply font-dazzle text-xl font-medium tracking-wide;
+    @apply text-xl font-medium tracking-wide;
   }
   a {
-    @apply font-dazzle text-base font-light hover:underline desktop:text-xl;
+    @apply text-base font-light hover:underline desktop:text-xl;
   }
   p {
     @apply text-base font-normal leading-relaxed tracking-wider desktop:text-xl;
   }
   button {
-    @apply font-sans text-base font-medium tracking-widest desktop:text-xl;
+    @apply text-base font-medium tracking-widest desktop:text-xl;
   }
   footer,
   span {
-    @apply font-dazzle font-light tracking-wider;
+    @apply font-light tracking-wider;
   }
 }
 
