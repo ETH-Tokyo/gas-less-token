@@ -17,8 +17,6 @@ export default async function handler(
 ) {
   switch (req.method) {
     // case 'GET' : {
-    //     const records = await InqDB.select({}).firstPage();
-    //     const entries = conciseRecord(records);
     //     return res.status(200).json({ message: 'GET', posted: entries as any });
     // }
 

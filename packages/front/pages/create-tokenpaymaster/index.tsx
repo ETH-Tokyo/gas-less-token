@@ -23,6 +23,8 @@ type FormInput = {
 };
 
 const FactoryForm: FC = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -37,11 +39,44 @@ const FactoryForm: FC = () => {
   });
 
   const [sendStatus, setSendStatus] = useState<number>(0);
+
+  const PopupAlerts = (props: { status: number }) => {
+    if (props.status == 1) {
+      return <Alert severity="info">Submitting request, hold on...</Alert>;
+    } else if (props.status == 2) {
+      return (
+        <Alert
+          severity="success"
+          onClose={() => {
+            setSendStatus(0);
+            router.reload();
+          }}
+        >
+          Success: Created token paymaster.
+        </Alert>
+      );
+    } else if (props.status == 3) {
+      return (
+        <Alert
+          severity="error"
+          onClose={() => {
+            setSendStatus(0);
+            router.reload();
+          }}
+        >
+          Failed: Could not create token master.
+        </Alert>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     if (!sendStatus) {
       setSendStatus(1);
       // send to endpoint
-      fetch("/api/create-factory", {
+      fetch("/api/create-tokenpaymaster", {
         method: "POST",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
@@ -60,14 +95,14 @@ const FactoryForm: FC = () => {
   return <></>;
 };
 
-const CreateFactory: NextPage = () => {
+const CreateTokenPaymaster: NextPage = () => {
   return (
     <>
       <Head>
         <title>Create Community</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout pageTitle="createfactory">
+      <Layout pageTitle="createtokenpaymaster">
         <main className="">
           <div className=""></div>
         </main>
@@ -76,4 +111,4 @@ const CreateFactory: NextPage = () => {
   );
 };
 
-export default CreateFactory;
+export default CreateTokenPaymaster;
