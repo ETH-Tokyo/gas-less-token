@@ -13,7 +13,7 @@ export const Header = () => {
       <div>
         <Link href="/">
           <Image
-            src="/logo/gasslesstoken.png"
+            src="/logo/gasslessTokenLogoBlack.png"
             alt="gasslesstoken"
             width={150}
             height={100}
