@@ -16,8 +16,11 @@ type FormInput = {
 const UserForm: FC = () => {
   const router = useRouter();
   const { paymaster } = router.query;
-  const { sendTx } = useAccount();
+  const { initAccount, sendTx } = useAccount();
   const [txHash, setTxHash] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [level, setLevel] = useState<string>("");
+  const [rate, setRate] = useState<string>("");
 
   const {
     register,
@@ -33,9 +36,9 @@ const UserForm: FC = () => {
 
   const [sendStatus, setSendStatus] = useState<number>(0);
   const PopupAlerts = (props: { status: number }) => {
-    if (props.status == 1) {
+    if (props.status === 2) {
       return <Alert severity="info">Submitting request, hold on...</Alert>;
-    } else if (props.status == 2) {
+    } else if (props.status === 3) {
       return (
         <Alert
           severity="success"
@@ -47,7 +50,7 @@ const UserForm: FC = () => {
           Success: Created token paymaster.
         </Alert>
       );
-    } else if (props.status == 3) {
+    } else if (props.status === 4) {
       return (
         <Alert
           severity="error"
@@ -65,16 +68,22 @@ const UserForm: FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    if (!sendStatus) {
+    if (sendStatus === 0) {
+      setSendStatus(2);
+      const address = await initAccount(data.secretPhrase);
+      setAddress(address);
+      setLevel("1");
+      setRate("100");
       setSendStatus(1);
-
+    } else if (sendStatus === 1) {
+      setSendStatus(2);
       const txHash = await sendTx(
         data.secretPhrase,
         data.to,
         paymaster as string,
       );
       setTxHash(txHash);
-      setSendStatus(2);
+      setSendStatus(3);
     }
   };
 
@@ -119,19 +128,32 @@ const UserForm: FC = () => {
             />
           )}
         />
+        <div>
+          {address && level && rate && (
+            <div>
+              <div>Address: {address}</div>
+              <div>Level: {level}</div>
+              <div>Rate: {rate}</div>
+            </div>
+          )}
+        </div>
         <PopupAlerts status={sendStatus} />
         <div className="mx-auto">
           <Button
             type="submit"
             variant="outlined"
             color="inherit"
-            disabled={!!sendStatus}
+            disabled={sendStatus !== 0 && sendStatus !== 1}
           >
-            {!!sendStatus
-              ? sendStatus == 2
-                ? "Submitted"
-                : "Submitting"
-              : "Send"}
+            {sendStatus === 0
+              ? "Check"
+              : sendStatus === 1
+              ? "Send"
+              : sendStatus === 2
+              ? "Submitting"
+              : sendStatus === 3
+              ? "Submitted"
+              : "-"}
           </Button>
         </div>
       </form>
