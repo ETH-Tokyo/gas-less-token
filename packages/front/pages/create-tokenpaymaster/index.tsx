@@ -47,9 +47,9 @@ const FactoryForm: FC = () => {
         ACCOUNT_FACTORY_ADDRESS!,
         token_symbol,
         ENTRY_POINT_ADDRESS!,
-        ethers.utils.parseUnits(eth_per_token_level_1),
-        ethers.utils.parseUnits(eth_per_token_level_2),
-        ethers.utils.parseUnits(eth_per_token_level_3),
+        Number(eth_per_token_level_1),
+        Number(eth_per_token_level_2),
+        Number(eth_per_token_level_3),
       );
       await contract.deployed();
       console.log(
@@ -78,9 +78,9 @@ const FactoryForm: FC = () => {
   const [sendStatus, setSendStatus] = useState<number>(0);
 
   const PopupAlerts = (props: { status: number }) => {
-    if (props.status == 1) {
+    if (props.status === 1) {
       return <Alert severity="info">Submitting request, hold on...</Alert>;
-    } else if (props.status == 2) {
+    } else if (props.status === 2) {
       return (
         <Alert
           severity="success"
@@ -92,7 +92,7 @@ const FactoryForm: FC = () => {
           Success: Created token paymaster.
         </Alert>
       );
-    } else if (props.status == 3) {
+    } else if (props.status === 3) {
       return (
         <Alert
           severity="error"
