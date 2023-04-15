@@ -1,7 +1,9 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, Link, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import TxCard from "../card/txCard";
 
 import { useAccount } from "@/hooks/useAccount";
 
@@ -44,7 +46,14 @@ const SendTx: FC = () => {
             router.reload();
           }}
         >
-          Success: Created token paymaster.
+          Success: Sent gas less transaction, transaction is{" "}
+          <Link
+            href={`https://mumbai.polygonscan.com/tx/${txHash}`}
+            target="_blank"
+            rel="polygon scan"
+          >
+            {txHash}
+          </Link>
         </Alert>
       );
     } else if (props.status === 4) {
@@ -98,7 +107,7 @@ const SendTx: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="Your AA account"
+              label="Enter a unique ID of your AA account"
               disabled={!!sendStatus}
               {...register("secretPhrase", {
                 required: "secret phrase is required",
@@ -130,13 +139,8 @@ const SendTx: FC = () => {
           )}
         />
         {address !== undefined && level !== undefined && rate !== undefined && (
-          <div>
-            <div>Address: {address}</div>
-            <div>Level: {level}</div>
-            <div>Rate: {rate}</div>
-          </div>
+          <TxCard address={address} level={level} rate={rate} />
         )}
-        {txHash !== undefined && <div>TxHath: {txHash}</div>}
         <PopupAlerts status={sendStatus} />
         <div className="mx-auto">
           <Button
