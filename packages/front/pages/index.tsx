@@ -25,7 +25,9 @@ export default function Home() {
                 height={100}
               />
             </Link>
-            <Link href="https://github.com">Source code</Link>
+            <Link href="https://github.com/ETH-Tokyo/gas-less-token">
+              Source code
+            </Link>
           </div>
         </div>
       </Layout>
