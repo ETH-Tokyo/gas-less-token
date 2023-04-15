@@ -111,7 +111,7 @@ const CreateAccount: FC = () => {
               ? sendStatus === 2
                 ? "Submitted"
                 : "Submitting"
-              : "Send"}
+              : "Create"}
           </Button>
         </div>
       </form>
