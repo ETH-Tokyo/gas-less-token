@@ -142,9 +142,10 @@ const SendTx: FC = () => {
           <TxCard address={address} level={level} rate={rate} />
         )}
         <PopupAlerts status={sendStatus} />
-        <div className="mx-auto">
+        <div className="mx-auto mt-10">
           <Button
             type="submit"
+            size="large"
             variant="outlined"
             color="inherit"
             disabled={sendStatus !== 0 && sendStatus !== 1}

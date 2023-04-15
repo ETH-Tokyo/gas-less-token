@@ -1,6 +1,8 @@
 import Head from "next/head";
 import { FC, ReactNode } from "react";
 
+import { Footer } from "../template/footer";
+
 type Props = {
   pageTitle: string;
   children: ReactNode;
@@ -25,6 +27,7 @@ export const Layout: FC<Props> = ({ pageTitle, children }) => {
         <div id="body" className="p-16">
           {children}
         </div>
+        <Footer />
       </main>
     </>
   );
