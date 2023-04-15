@@ -9,6 +9,7 @@ import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import Layout from "@/components/layout/baseLayout";
+import { Header } from "@/components/template/header";
 import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
 
 export type FormInput = {
@@ -129,9 +130,6 @@ const FactoryForm: FC = () => {
 
   return (
     <div className="flex flex-col space-y-12">
-      <div className="flex justify-end">
-        <ConnectButton />
-      </div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="token_symbol"
@@ -257,6 +255,7 @@ const OwnerPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout pageTitle="owner">
+        <Header />
         <main className="">
           <div className="">
             <FactoryForm />

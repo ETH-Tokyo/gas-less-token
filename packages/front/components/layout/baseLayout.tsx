@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const Layout: FC<Props> = ({ pageTitle, children }) => {
-  const siteTitle = "UNCHAIN";
+  const siteTitle = "GassLess Token";
   const subTitle = "gm, world";
 
   return (
