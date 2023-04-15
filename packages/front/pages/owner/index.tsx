@@ -158,7 +158,7 @@ const FactoryForm: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="ETH per token for level 1"
+              label="Token Rate per 1ETH for level 1"
               disabled={!!sendStatus}
               {...register("eth_per_token_level_1", {
                 required: "You must choose a rate (per unit token, in ETH)",
@@ -180,7 +180,7 @@ const FactoryForm: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="ETH per token for level 2"
+              label="Token Rate per 1ETH for level 2"
               disabled={!!sendStatus}
               {...register("eth_per_token_level_2", {
                 required: "You must choose a rate (per unit token, in ETH)",
@@ -202,7 +202,7 @@ const FactoryForm: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="ETH per token for level 3"
+              label="Token Rate per 1ETH for level 3"
               disabled={!!sendStatus}
               {...register("eth_per_token_level_3", {
                 required: "You must choose a rate (per unit token, in ETH)",
