@@ -1,4 +1,5 @@
-import { ethers } from "ethers";
+import { AlchemyProvider } from "@ethersproject/providers";
+import { Contract, ethers } from "ethers";
 import {
   getGasFee,
   getHttpRpcClient,
@@ -7,6 +8,8 @@ import {
   printOp,
 } from "protocol/index";
 
+import TokenPaymasterArtifact from "@/libs/abi/TokenPaymaster.json";
+
 type Account = {
   initAccount: (secretPhrase: string) => Promise<string>;
   sendTx: (
@@ -14,6 +17,10 @@ type Account = {
     to: string,
     paymaster: string,
   ) => Promise<string>;
+  getLevelAndRate: (
+    account: string,
+    paymaster: string,
+  ) => Promise<{ level: number; rate: number }>;
 };
 
 const useAccount = (): Account => {
@@ -78,9 +85,32 @@ const useAccount = (): Account => {
     }
   };
 
+  const getLevelAndRate = async (
+    account: string,
+    paymaster: string,
+  ): Promise<{ level: number; rate: number }> => {
+    const provider = new AlchemyProvider(
+      {
+        chainId: 80001,
+        name: "Polygon Mumbai Testnet",
+      },
+      process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+    );
+    const tokenPaymasterContract = new Contract(
+      paymaster,
+      TokenPaymasterArtifact.abi,
+      provider,
+    );
+    const res = await tokenPaymasterContract.getLevelAndRate(account);
+    console.log(res);
+
+    return { level: res.level.toString(), rate: res.rate.toString() };
+  };
+
   return {
     initAccount,
     sendTx,
+    getLevelAndRate,
   };
 };
 
