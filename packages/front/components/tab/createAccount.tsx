@@ -1,4 +1,4 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, Link, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -38,7 +38,15 @@ const CreateAccount: FC = () => {
             router.reload();
           }}
         >
-          Success: Created token paymaster.
+          Success: Your account address is{" "}
+          <Link
+            href={`https://mumbai.polygonscan.com/address/${address}`}
+            target="_blank"
+            rel="polygon scan"
+          >
+            {address}
+          </Link>
+          .
         </Alert>
       );
     } else if (props.status === 3) {
@@ -50,7 +58,7 @@ const CreateAccount: FC = () => {
             router.reload();
           }}
         >
-          Failed: Could not create token master.
+          Failed: Could not create account address.
         </Alert>
       );
     } else {
@@ -107,7 +115,6 @@ const CreateAccount: FC = () => {
           </Button>
         </div>
       </form>
-      <div>{address}</div>
     </div>
   );
 };
