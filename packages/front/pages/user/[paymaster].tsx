@@ -35,22 +35,24 @@ const UserPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Send Gasless tx</title>
+        <title>User Page</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout pageTitle="sendtx">
+      <Layout pageTitle="user">
         <main className="">
           <div className="">
             <Tabs value={tabIndex} onChange={handleChange}>
               <Tab label="Create Account" />
               <Tab label="Send Tx" />
             </Tabs>
-            <TabPanel value={tabIndex} index={0}>
-              <CreateAccount />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={1}>
-              <SendTx />
-            </TabPanel>
+            <div className="pt-8">
+              <TabPanel value={tabIndex} index={0}>
+                <CreateAccount />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={1}>
+                <SendTx />
+              </TabPanel>
+            </div>
           </div>
         </main>
       </Layout>
