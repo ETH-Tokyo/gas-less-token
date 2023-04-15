@@ -2,8 +2,6 @@ import Head from "next/head";
 import Link from "next/link";
 import { FC, ReactNode } from "react";
 
-import { Header } from "./templates/Header";
-
 type Props = {
   pageTitle: string;
   children: ReactNode;
@@ -29,9 +27,8 @@ export const Layout: FC<Props> = ({
       </Head>
 
       <main>
-        <Header />
         {showHeader && (
-          <div id="header" className="flex px-32 py-16 space-x-24">
+          <div id="header" className="flex px-32 pt-16 space-x-24">
             <Link href="/create-tokenpaymaster">
               <h3>(owner) create token paymaster</h3>
             </Link>

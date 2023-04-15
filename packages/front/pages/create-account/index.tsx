@@ -121,7 +121,7 @@ const CreateContractWallet: NextPage = () => {
         <title>Send Gasless tx</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout pageTitle="sendtx" showHeader={false}>
+      <Layout pageTitle="sendtx">
         <main className="">
           <div className="">
             <UserForm />
