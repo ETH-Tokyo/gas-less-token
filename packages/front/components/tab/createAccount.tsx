@@ -46,7 +46,6 @@ const CreateAccount: FC = () => {
           >
             {address}
           </Link>
-          .
         </Alert>
       );
     } else if (props.status === 3) {
