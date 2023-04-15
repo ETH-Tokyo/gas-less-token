@@ -6,7 +6,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAccount as useWalletAddress } from "wagmi";
 
 import Layout from "@/components/layout/baseLayout";
 import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
@@ -14,42 +13,52 @@ import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
 export type FormInput = {
   seed_uuid: string;
   token_symbol: string;
-  eth_per_token: string;
+  eth_per_token_level_1: string;
+  eth_per_token_level_2: string;
+  eth_per_token_level_3: string;
 };
 
 const FactoryForm: FC = () => {
   const router = useRouter();
 
-  const deploy = useCallback(async (tokenSymbol: string) => {
+  const deploy = useCallback(async (data: FormInput) => {
+    const {
+      token_symbol,
+      eth_per_token_level_1,
+      eth_per_token_level_2,
+      eth_per_token_level_3,
+    } = data;
     const { ethereum } = window;
-    const provider = new ethers.providers.JsonRpcProvider(ethereum as any);
-    const signer = provider.getSigner();
-    console.log(signer);
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum as any);
+      const signer = provider.getSigner();
+      const contractABI = TokenPaymasterABI;
+      const factory = new ethers.ContractFactory(
+        contractABI.abi,
+        contractABI.bytecode,
+        signer,
+      );
 
-    const contractABI = TokenPaymasterABI;
-    const factory = new ethers.ContractFactory(
-      contractABI.abi,
-      contractABI.bytecode,
-      signer,
-    );
-    console.log(factory);
+      const ENTRY_POINT_ADDRESS = process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS;
+      const ACCOUNT_FACTORY_ADDRESS =
+        process.env.NEXT_PUBLIC_SIMPLE_ACCOUNT_FACTORY_ADDRESS;
 
-    const ENTRY_POINT_ADDRESS = process.env.ENTRY_POINT_ADDRESS;
-    const ACCOUNT_FACTORY_ADDRESS = process.env.ACCOUNT_FACTORY_ADDRESS;
-    console.log(ENTRY_POINT_ADDRESS, ACCOUNT_FACTORY_ADDRESS);
-    const contract = await factory.deploy(
-      ACCOUNT_FACTORY_ADDRESS!,
-      tokenSymbol,
-      ENTRY_POINT_ADDRESS!,
-      100,
-      200,
-      300,
-    );
-    await contract.deployed();
-    console.log(
-      "コントラクトがデプロイされました。アドレス：",
-      contract.address,
-    );
+      const contract = await factory.deploy(
+        ACCOUNT_FACTORY_ADDRESS!,
+        token_symbol,
+        ENTRY_POINT_ADDRESS!,
+        ethers.utils.parseUnits(eth_per_token_level_1),
+        ethers.utils.parseUnits(eth_per_token_level_2),
+        ethers.utils.parseUnits(eth_per_token_level_3),
+      );
+      await contract.deployed();
+      console.log(
+        "コントラクトがデプロイされました。アドレス：",
+        contract.address,
+      );
+    } else {
+      console.log("メタマスクに接続してください");
+    }
   }, []);
 
   const {
@@ -60,7 +69,9 @@ const FactoryForm: FC = () => {
   } = useForm<FormInput>({
     defaultValues: {
       token_symbol: "",
-      eth_per_token: "",
+      eth_per_token_level_1: "",
+      eth_per_token_level_2: "",
+      eth_per_token_level_3: "",
     },
   });
 
@@ -103,11 +114,8 @@ const FactoryForm: FC = () => {
       setSendStatus(1);
 
       /** deploy contract */
-      deploy(data.token_symbol)
-        .then(() => {
-          console.log("デプロイ完了");
-          setSendStatus(2);
-        })
+      deploy(data)
+        .then(() => setSendStatus(2))
         .catch((error) => {
           console.log("デプロイ中にエラーが発生しました。", error);
           setSendStatus(3);
@@ -116,10 +124,11 @@ const FactoryForm: FC = () => {
     }
   };
 
-  console.log(process.env);
-
   return (
-    <div>
+    <div className="flex flex-col space-y-24">
+      <div className="flex justify-end">
+        <ConnectButton />
+      </div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="token_symbol"
@@ -142,20 +151,66 @@ const FactoryForm: FC = () => {
           )}
         />
         <Controller
-          name="eth_per_token"
+          name="eth_per_token_level_1"
           control={control}
           render={({ field }) => (
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="ETH per token"
+              label="ETH per token for level 1"
               disabled={!!sendStatus}
-              {...register("eth_per_token", {
+              {...register("eth_per_token_level_1", {
                 required: "You must choose a rate (per unit token, in ETH)",
               })}
-              error={!!errors.eth_per_token}
+              error={!!errors.eth_per_token_level_1}
               helperText={
-                errors?.eth_per_token ? errors.eth_per_token.message : "\u00a0"
+                errors?.eth_per_token_level_1
+                  ? errors.eth_per_token_level_1.message
+                  : "\u00a0"
+              }
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          name="eth_per_token_level_2"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              sx={{ mb: 1 }}
+              variant="filled"
+              label="ETH per token for level 2"
+              disabled={!!sendStatus}
+              {...register("eth_per_token_level_2", {
+                required: "You must choose a rate (per unit token, in ETH)",
+              })}
+              error={!!errors.eth_per_token_level_2}
+              helperText={
+                errors?.eth_per_token_level_2
+                  ? errors.eth_per_token_level_2.message
+                  : "\u00a0"
+              }
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          name="eth_per_token_level_3"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              sx={{ mb: 1 }}
+              variant="filled"
+              label="ETH per token for level 3"
+              disabled={!!sendStatus}
+              {...register("eth_per_token_level_3", {
+                required: "You must choose a rate (per unit token, in ETH)",
+              })}
+              error={!!errors.eth_per_token_level_3}
+              helperText={
+                errors?.eth_per_token_level_3
+                  ? errors.eth_per_token_level_3.message
+                  : "\u00a0"
               }
               {...field}
             />
@@ -182,7 +237,6 @@ const FactoryForm: FC = () => {
 };
 
 const CreateTokenPaymaster: NextPage = () => {
-  const { address: walletAddress } = useWalletAddress();
   return (
     <>
       <Head>
@@ -192,8 +246,6 @@ const CreateTokenPaymaster: NextPage = () => {
       <Layout pageTitle="createtokenpaymaster">
         <main className="">
           <div className="">
-            <ConnectButton />
-            {/* {walletAddress ? <FactoryForm /> : <ConnectButton />} */}
             <FactoryForm />
           </div>
         </main>

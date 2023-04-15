@@ -101,7 +101,7 @@ const UserForm: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="貴方しか思いつかない文字列を記入してください。貴方の固有識別子となります"
+              label="Your AA account"
               disabled={!!sendStatus}
               {...register("secretPhrase", {
                 required: "secret phrase is required",
@@ -121,7 +121,7 @@ const UserForm: FC = () => {
             <TextField
               sx={{ mb: 1 }}
               variant="filled"
-              label="メッセージの送信先"
+              label="Send message to"
               disabled={!!sendStatus}
               {...register("to", {
                 required: "address is required",
