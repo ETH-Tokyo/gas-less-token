@@ -1,8 +1,9 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, TextField, Typography } from "@mui/material";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -20,6 +21,7 @@ export type FormInput = {
 
 const FactoryForm: FC = () => {
   const router = useRouter();
+  const [paymaster, setPaymaster] = useState<string>();
 
   const deploy = useCallback(async (data: FormInput) => {
     const {
@@ -52,6 +54,7 @@ const FactoryForm: FC = () => {
         Number(eth_per_token_level_3),
       );
       await contract.deployed();
+      setPaymaster(contract.address);
       console.log(
         "コントラクトがデプロイされました。アドレス：",
         contract.address,
@@ -125,7 +128,7 @@ const FactoryForm: FC = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-24">
+    <div className="flex flex-col space-y-12">
       <div className="flex justify-end">
         <ConnectButton />
       </div>
@@ -232,6 +235,16 @@ const FactoryForm: FC = () => {
           </Button>
         </div>
       </form>
+      {paymaster && (
+        <div>
+          <div>deployed paymaster address: {paymaster}</div>
+          <Link href={`/user/${paymaster}`} passHref>
+            <Button variant="contained" color="primary">
+              go to user page
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
