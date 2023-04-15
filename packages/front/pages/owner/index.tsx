@@ -225,7 +225,7 @@ const FactoryForm: FC = () => {
             disabled={!!sendStatus}
           >
             {!!sendStatus
-              ? sendStatus == 2
+              ? sendStatus === 2
                 ? "Submitted"
                 : "Submitting"
               : "Send"}
@@ -236,14 +236,14 @@ const FactoryForm: FC = () => {
   );
 };
 
-const CreateTokenPaymaster: NextPage = () => {
+const OwnerPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Create Community</title>
+        <title>Owner Page</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout pageTitle="createtokenpaymaster">
+      <Layout pageTitle="owner">
         <main className="">
           <div className="">
             <FactoryForm />
@@ -254,4 +254,4 @@ const CreateTokenPaymaster: NextPage = () => {
   );
 };
 
-export default CreateTokenPaymaster;
+export default OwnerPage;
