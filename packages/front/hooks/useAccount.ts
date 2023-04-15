@@ -1,4 +1,4 @@
-import { AlchemyProvider } from "@ethersproject/providers";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { Contract, ethers } from "ethers";
 import {
   getGasFee,
@@ -89,13 +89,10 @@ const useAccount = (): Account => {
     account: string,
     paymaster: string,
   ): Promise<{ level: number; rate: number }> => {
-    const provider = new AlchemyProvider(
-      {
-        chainId: 80001,
-        name: "Polygon Mumbai Testnet",
-      },
-      process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-    );
+    const RPC_ENDPOINT = `https://polygon-mumbai.g.alchemy.com/v2/${process.env
+      .NEXT_PUBLIC_ALCHEMY_API_KEY!}`;
+    const provider = new StaticJsonRpcProvider(RPC_ENDPOINT);
+
     const tokenPaymasterContract = new Contract(
       paymaster,
       TokenPaymasterArtifact.abi,
