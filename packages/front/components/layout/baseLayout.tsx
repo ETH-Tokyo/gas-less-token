@@ -24,7 +24,6 @@ export const Layout: FC<Props> = ({ pageTitle, children }) => {
       </Head>
 
       <main>
-        <Header />
         <div id="header" className="flex px-32 py-16 space-x-24">
           <Link href="/create-tokenpaymaster">
             <h3>(owner) create token paymaster</h3>
