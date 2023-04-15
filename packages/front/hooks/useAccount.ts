@@ -12,7 +12,6 @@ type Account = {
   sendTx: (
     secretPhrase: string,
     to: string,
-    message: string,
     paymaster: string,
   ) => Promise<string>;
 };
@@ -38,7 +37,6 @@ const useAccount = (): Account => {
   const sendTx = async (
     secretPhrase: string,
     to: string,
-    message: string,
     paymaster: string,
   ): Promise<string> => {
     const privateKey = ethers.utils.keccak256(
@@ -55,11 +53,9 @@ const useAccount = (): Account => {
     );
 
     const target = ethers.utils.getAddress(to);
-    const utf8Bytes = ethers.utils.toUtf8Bytes(message);
-    const data = ethers.utils.hexlify(utf8Bytes);
     const op = await accountAPI.createSignedUserOp({
       target,
-      data,
+      data: "0x",
       ...(await getGasFee(provider)),
     });
     console.log(`Signed UserOperation: ${await printOp(op)}`);
