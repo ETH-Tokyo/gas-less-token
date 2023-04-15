@@ -34,6 +34,8 @@ module.exports = {
     "**/*.svg",
     "**/*.ico",
     "**/*.css",
+    "**/*.jpg",
+    "**/*.png",
   ],
   rules: {
     "no-console": "off",
