@@ -104,7 +104,7 @@ const useAccount = (): Account => {
     const res = await tokenPaymasterContract.getLevelAndRate(account);
     console.log(res);
 
-    return { level: res.level.toString(), rate: res.rate.toString() };
+    return { level: res.level.toNumber(), rate: res.rate.toNumber() };
   };
 
   return {
