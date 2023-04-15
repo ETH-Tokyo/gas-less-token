@@ -1,15 +1,17 @@
 import { Alert, Button, TextField } from "@mui/material";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ethers } from "ethers";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useAccount } from "wagmi";
 
 import Layout from "@/components/layout/baseLayout";
-import { useAccount } from "@/hooks/useAccount";
+import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
 
-type FormInput = {
+export type FormInput = {
   seed_uuid: string;
   token_symbol: string;
   eth_per_token: string;
@@ -17,6 +19,40 @@ type FormInput = {
 
 const FactoryForm: FC = () => {
   const router = useRouter();
+
+  const deploy = useCallback(async (tokenSymbol: string) => {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum as any);
+      const signer = provider.getSigner();
+      const contractABI = TokenPaymasterABI;
+      const factory = new ethers.ContractFactory(
+        contractABI.abi,
+        contractABI.bytecode,
+        signer,
+      );
+
+      const ENTRY_POINT_ADDRESS = process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS;
+      const ACCOUNT_FACTORY_ADDRESS =
+        process.env.NEXT_PUBLIC_SIMPLE_ACCOUNT_FACTORY_ADDRESS;
+
+      const contract = await factory.deploy(
+        ACCOUNT_FACTORY_ADDRESS!,
+        tokenSymbol,
+        ENTRY_POINT_ADDRESS!,
+        100,
+        200,
+        300,
+      );
+      await contract.deployed();
+      console.log(
+        "コントラクトがデプロイされました。アドレス：",
+        contract.address,
+      );
+    } else {
+      console.log("メタマスクに接続してください");
+    }
+  }, []);
 
   const {
     register,
@@ -68,20 +104,17 @@ const FactoryForm: FC = () => {
     if (!sendStatus) {
       setSendStatus(1);
 
-      // send to endpoint
-      fetch("/api/create-tokenpaymaster", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      }).then((res) => {
-        if (res.status === 201) {
+      /** deploy contract */
+      deploy(data.token_symbol)
+        .then(() => {
+          console.log("デプロイ完了");
           setSendStatus(2);
-        } else if (res.status >= 400) {
-          // unsuccessful inquiries trigger error message
+        })
+        .catch((error) => {
+          console.log("デプロイ中にエラーが発生しました。", error);
           setSendStatus(3);
-          throw new Error(`${res.status}, ${res.statusText}`);
-        }
-      });
+          throw new Error(`${error}`);
+        });
     }
   };
 
@@ -152,6 +185,7 @@ const FactoryForm: FC = () => {
 };
 
 const CreateTokenPaymaster: NextPage = () => {
+  const { address: walletAddress } = useAccount();
   return (
     <>
       <Head>

@@ -40,7 +40,6 @@ export const Layout: FC<Props> = ({
             </Link>
           </div>
         )}
-
         <div id="body" className="p-32">
           {children}
         </div>
