@@ -2,7 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export const Header = () => {
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "flex-end" }}>
       <ConnectButton />
     </div>
   );
