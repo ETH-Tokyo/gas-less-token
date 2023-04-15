@@ -1,11 +1,8 @@
 import { Alert, Button, TextField } from "@mui/material";
-import { NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-import Layout from "@/components/layout/baseLayout";
 import { useAccount } from "@/hooks/useAccount";
 
 type FormInput = {
@@ -13,7 +10,7 @@ type FormInput = {
   to: string;
 };
 
-const UserForm: FC = () => {
+const SendTx: FC = () => {
   const router = useRouter();
   const { paymaster } = router.query;
   const { initAccount, sendTx, getLevelAndRate } = useAccount();
@@ -161,23 +158,6 @@ const UserForm: FC = () => {
         </div>
       </form>
     </div>
-  );
-};
-const SendTx: NextPage = () => {
-  return (
-    <>
-      <Head>
-        <title>Send Gasless tx</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Layout pageTitle="sendtx">
-        <main className="">
-          <div className="">
-            <UserForm />
-          </div>
-        </main>
-      </Layout>
-    </>
   );
 };
 

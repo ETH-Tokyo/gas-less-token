@@ -1,18 +1,15 @@
 import { Alert, Button, TextField } from "@mui/material";
-import { NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-import Layout from "@/components/layout/baseLayout";
 import { useAccount } from "@/hooks/useAccount";
 
 type FormInput = {
   seed_uuid: string;
 };
 
-const UserForm: FC = () => {
+const CreateAccount: FC = () => {
   const router = useRouter();
   const { initAccount } = useAccount();
   const [address, setAddress] = useState<string>("");
@@ -30,9 +27,9 @@ const UserForm: FC = () => {
 
   const [sendStatus, setSendStatus] = useState<number>(0);
   const PopupAlerts = (props: { status: number }) => {
-    if (props.status == 1) {
+    if (props.status === 1) {
       return <Alert severity="info">Submitting request, hold on...</Alert>;
-    } else if (props.status == 2) {
+    } else if (props.status === 2) {
       return (
         <Alert
           severity="success"
@@ -44,7 +41,7 @@ const UserForm: FC = () => {
           Success: Created token paymaster.
         </Alert>
       );
-    } else if (props.status == 3) {
+    } else if (props.status === 3) {
       return (
         <Alert
           severity="error"
@@ -103,7 +100,7 @@ const UserForm: FC = () => {
             disabled={!!sendStatus}
           >
             {!!sendStatus
-              ? sendStatus == 2
+              ? sendStatus === 2
                 ? "Submitted"
                 : "Submitting"
               : "Send"}
@@ -114,22 +111,5 @@ const UserForm: FC = () => {
     </div>
   );
 };
-const CreateContractWallet: NextPage = () => {
-  return (
-    <>
-      <Head>
-        <title>Send Gasless tx</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Layout pageTitle="sendtx">
-        <main className="">
-          <div className="">
-            <UserForm />
-          </div>
-        </main>
-      </Layout>
-    </>
-  );
-};
 
-export default CreateContractWallet;
+export default CreateAccount;
