@@ -15,6 +15,7 @@
     "coverage": "hardhat coverage",
     "paymaster:deploy": "hardhat run scripts/paymaster/deploy.ts --network mumbai",
     "paymaster:setup": "hardhat run scripts/paymaster/setup.ts --network mumbai",
+    "paymaster:check": "hardhat run scripts/paymaster/check.ts --network mumbai",
     "init": "ts-node scripts/init.ts",
     "simpleAccount": "ts-node scripts/simpleAccount/index.ts",
     "verify": "hardhat verify --network mumbai",

@@ -14,7 +14,14 @@ async function main() {
 
   // TokenPaymaster
   const TokenPaymaster = await ethers.getContractFactory('TokenPaymaster')
-  const tokenPaymaster = await TokenPaymaster.deploy(ACCOUNT_FACTORY_ADDRESS!, 'HOGE', ENTRY_POINT_ADDRESS!)
+  const tokenPaymaster = await TokenPaymaster.deploy(
+    ACCOUNT_FACTORY_ADDRESS!,
+    'HOGE',
+    ENTRY_POINT_ADDRESS!,
+    100,
+    200,
+    300
+  )
   console.log('TokenPaymaster address:', tokenPaymaster.address)
 }
 

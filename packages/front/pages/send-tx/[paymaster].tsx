@@ -9,14 +9,18 @@ import Layout from "@/components/layout/baseLayout";
 import { useAccount } from "@/hooks/useAccount";
 
 type FormInput = {
-  seed_uuid: string;
+  secretPhrase: string;
+  to: string;
 };
 
 const UserForm: FC = () => {
   const router = useRouter();
   const { paymaster } = router.query;
-  const { sendEth } = useAccount();
+  const { initAccount, sendTx } = useAccount();
   const [txHash, setTxHash] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [level, setLevel] = useState<string>("");
+  const [rate, setRate] = useState<string>("");
 
   const {
     register,
@@ -25,15 +29,16 @@ const UserForm: FC = () => {
     formState: { errors },
   } = useForm<FormInput>({
     defaultValues: {
-      seed_uuid: "",
+      secretPhrase: "",
+      to: "",
     },
   });
 
   const [sendStatus, setSendStatus] = useState<number>(0);
   const PopupAlerts = (props: { status: number }) => {
-    if (props.status == 1) {
+    if (props.status === 2) {
       return <Alert severity="info">Submitting request, hold on...</Alert>;
-    } else if (props.status == 2) {
+    } else if (props.status === 3) {
       return (
         <Alert
           severity="success"
@@ -45,7 +50,7 @@ const UserForm: FC = () => {
           Success: Created token paymaster.
         </Alert>
       );
-    } else if (props.status == 3) {
+    } else if (props.status === 4) {
       return (
         <Alert
           severity="error"
@@ -63,17 +68,22 @@ const UserForm: FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    if (!sendStatus) {
+    if (sendStatus === 0) {
+      setSendStatus(2);
+      const address = await initAccount(data.secretPhrase);
+      setAddress(address);
+      setLevel("1");
+      setRate("100");
       setSendStatus(1);
-
-      const txHash = await sendEth(
-        data.seed_uuid,
-        paymaster as string,
-        1,
+    } else if (sendStatus === 1) {
+      setSendStatus(2);
+      const txHash = await sendTx(
+        data.secretPhrase,
+        data.to,
         paymaster as string,
       );
       setTxHash(txHash);
-      setSendStatus(2);
+      setSendStatus(3);
     }
   };
 
@@ -81,7 +91,7 @@ const UserForm: FC = () => {
     <div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="seed_uuid"
+          name="secretPhrase"
           control={control}
           render={({ field }) => (
             <TextField
@@ -89,30 +99,61 @@ const UserForm: FC = () => {
               variant="filled"
               label="貴方しか思いつかない文字列を記入してください。貴方の固有識別子となります"
               disabled={!!sendStatus}
-              {...register("seed_uuid", {
-                required: "token symbol is required",
+              {...register("secretPhrase", {
+                required: "secret phrase is required",
               })}
-              error={!!errors.seed_uuid}
+              error={!!errors.secretPhrase}
               helperText={
-                errors?.seed_uuid ? errors.seed_uuid.message : "\u00a0"
+                errors?.secretPhrase ? errors.secretPhrase.message : "\u00a0"
               }
               {...field}
             />
           )}
         />
+        <Controller
+          name="to"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              sx={{ mb: 1 }}
+              variant="filled"
+              label="メッセージの送信先"
+              disabled={!!sendStatus}
+              {...register("to", {
+                required: "address is required",
+              })}
+              error={!!errors.to}
+              helperText={errors?.to ? errors.to.message : "\u00a0"}
+              {...field}
+            />
+          )}
+        />
+        <div>
+          {address && level && rate && (
+            <div>
+              <div>Address: {address}</div>
+              <div>Level: {level}</div>
+              <div>Rate: {rate}</div>
+            </div>
+          )}
+        </div>
         <PopupAlerts status={sendStatus} />
         <div className="mx-auto">
           <Button
             type="submit"
             variant="outlined"
             color="inherit"
-            disabled={!!sendStatus}
+            disabled={sendStatus !== 0 && sendStatus !== 1}
           >
-            {!!sendStatus
-              ? sendStatus == 2
-                ? "Submitted"
-                : "Submitting"
-              : "Send"}
+            {sendStatus === 0
+              ? "Check"
+              : sendStatus === 1
+              ? "Send"
+              : sendStatus === 2
+              ? "Submitting"
+              : sendStatus === 3
+              ? "Submitted"
+              : "-"}
           </Button>
         </div>
       </form>
