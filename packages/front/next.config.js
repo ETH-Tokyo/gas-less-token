@@ -10,6 +10,14 @@ const nextConfig = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://polygon-mumbai.g.alchemy.com/v2/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

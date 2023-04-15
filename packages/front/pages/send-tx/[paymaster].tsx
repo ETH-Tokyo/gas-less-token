@@ -16,11 +16,11 @@ type FormInput = {
 const UserForm: FC = () => {
   const router = useRouter();
   const { paymaster } = router.query;
-  const { initAccount, sendTx } = useAccount();
-  const [txHash, setTxHash] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [level, setLevel] = useState<string>("");
-  const [rate, setRate] = useState<string>("");
+  const { initAccount, sendTx, getLevelAndRate } = useAccount();
+  const [txHash, setTxHash] = useState<string>();
+  const [address, setAddress] = useState<string>();
+  const [level, setLevel] = useState<number>();
+  const [rate, setRate] = useState<number>();
 
   const {
     register,
@@ -71,9 +71,13 @@ const UserForm: FC = () => {
     if (sendStatus === 0) {
       setSendStatus(2);
       const address = await initAccount(data.secretPhrase);
+      const { level, rate } = await getLevelAndRate(
+        address,
+        paymaster as string,
+      );
       setAddress(address);
-      setLevel("1");
-      setRate("100");
+      setLevel(level);
+      setRate(rate);
       setSendStatus(1);
     } else if (sendStatus === 1) {
       setSendStatus(2);
@@ -128,15 +132,14 @@ const UserForm: FC = () => {
             />
           )}
         />
-        <div>
-          {address && level && rate && (
-            <div>
-              <div>Address: {address}</div>
-              <div>Level: {level}</div>
-              <div>Rate: {rate}</div>
-            </div>
-          )}
-        </div>
+        {address !== undefined && level !== undefined && rate !== undefined && (
+          <div>
+            <div>Address: {address}</div>
+            <div>Level: {level}</div>
+            <div>Rate: {rate}</div>
+          </div>
+        )}
+        {txHash !== undefined && <div>TxHath: {txHash}</div>}
         <PopupAlerts status={sendStatus} />
         <div className="mx-auto">
           <Button
@@ -157,7 +160,6 @@ const UserForm: FC = () => {
           </Button>
         </div>
       </form>
-      <div>{txHash}</div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import { ethers } from "ethers";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
+import { Contract, ethers } from "ethers";
 import {
   getGasFee,
   getHttpRpcClient,
@@ -7,6 +8,8 @@ import {
   printOp,
 } from "protocol/index";
 
+import TokenPaymasterArtifact from "@/libs/abi/TokenPaymaster.json";
+
 type Account = {
   initAccount: (secretPhrase: string) => Promise<string>;
   sendTx: (
@@ -14,6 +17,10 @@ type Account = {
     to: string,
     paymaster: string,
   ) => Promise<string>;
+  getLevelAndRate: (
+    account: string,
+    paymaster: string,
+  ) => Promise<{ level: number; rate: number }>;
 };
 
 const useAccount = (): Account => {
@@ -78,9 +85,28 @@ const useAccount = (): Account => {
     }
   };
 
+  const getLevelAndRate = async (
+    account: string,
+    paymaster: string,
+  ): Promise<{ level: number; rate: number }> => {
+    const RPC_ENDPOINT = `https://polygon-mumbai.g.alchemy.com/v2/${process.env
+      .NEXT_PUBLIC_ALCHEMY_API_KEY!}`;
+    const provider = new StaticJsonRpcProvider(RPC_ENDPOINT);
+
+    const tokenPaymasterContract = new Contract(
+      paymaster,
+      TokenPaymasterArtifact.abi,
+      provider,
+    );
+    const res = await tokenPaymasterContract.getLevelAndRate(account);
+
+    return { level: res.level.toNumber(), rate: res.rate.toNumber() };
+  };
+
   return {
     initAccount,
     sendTx,
+    getLevelAndRate,
   };
 };
 
