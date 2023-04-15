@@ -24,8 +24,8 @@ async function main() {
   const depositTx = await paymaster.connect(deployer).deposit({ value: ethers.utils.parseEther('0.1') })
   console.log('complete to deposit. tx hash:', depositTx.hash)
 
-  // mint 1 HOGE to account
-  const mintTx = await paymaster.connect(deployer).mintTokens(ACCOUNT_ADDRESS!, ethers.utils.parseEther('1'))
+  // mint 100 HOGE to account
+  const mintTx = await paymaster.connect(deployer).mintTokens(ACCOUNT_ADDRESS!, ethers.utils.parseEther('100'))
   console.log('complete to mintTokens. tx hash:', mintTx.hash)
 }
 
