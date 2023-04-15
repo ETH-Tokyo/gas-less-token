@@ -93,11 +93,11 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
     // or a setter.
     function getTokenValueOfEth(address sender, uint256 valueEth) internal view virtual returns (uint256 valueToken) {
         if (levels[sender] == 1) {
-            return valueEth / level1Rate;
+            return valueEth * level1Rate;
         } else if (levels[sender] == 2) {
-            return valueEth / level2Rate;
+            return valueEth * level2Rate;
         } else {
-            return valueEth / level0Rate;
+            return valueEth * level0Rate;
         }
     }
 
