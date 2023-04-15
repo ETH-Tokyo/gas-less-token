@@ -151,7 +151,11 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
         _transfer(sender, address(this), charge);
 
         // level up
-        if (levels[sender] != 1) {
+        if (levels[sender] == 1) {
+            levels[sender] = 2;
+        } else if (levels[sender] == 2) {
+            levels[sender] = 2;
+        } else {
             levels[sender] = 1;
         }
     }
