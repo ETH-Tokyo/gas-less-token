@@ -9,10 +9,9 @@ import {
 
 type Account = {
   initAccount: (secretPhrase: string) => Promise<string>;
-  sendEth: (
+  sendTx: (
     secretPhrase: string,
     to: string,
-    amount: number,
     paymaster: string,
   ) => Promise<string>;
 };
@@ -35,10 +34,9 @@ const useAccount = (): Account => {
     return await accountAPI.getCounterFactualAddress();
   };
 
-  const sendEth = async (
+  const sendTx = async (
     secretPhrase: string,
     to: string,
-    amount: number,
     paymaster: string,
   ): Promise<string> => {
     const privateKey = ethers.utils.keccak256(
@@ -55,10 +53,8 @@ const useAccount = (): Account => {
     );
 
     const target = ethers.utils.getAddress(to);
-    const value = ethers.utils.parseEther(amount.toString());
     const op = await accountAPI.createSignedUserOp({
       target,
-      value,
       data: "0x",
       ...(await getGasFee(provider)),
     });
@@ -84,7 +80,7 @@ const useAccount = (): Account => {
 
   return {
     initAccount,
-    sendEth,
+    sendTx,
   };
 };
 
