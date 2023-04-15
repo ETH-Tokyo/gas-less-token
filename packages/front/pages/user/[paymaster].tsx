@@ -6,6 +6,7 @@ import { useState } from "react";
 import Layout from "@/components/layout/baseLayout";
 import CreateAccount from "@/components/tab/createAccount";
 import SendTx from "@/components/tab/sendTx";
+import { Header } from "@/components/template/header";
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -39,22 +40,21 @@ const UserPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout pageTitle="user">
-        <main className="">
-          <div className="">
-            <Tabs value={tabIndex} onChange={handleChange}>
-              <Tab label="Create Account" />
-              <Tab label="Send Tx" />
-            </Tabs>
-            <div className="pt-8">
-              <TabPanel value={tabIndex} index={0}>
-                <CreateAccount />
-              </TabPanel>
-              <TabPanel value={tabIndex} index={1}>
-                <SendTx />
-              </TabPanel>
-            </div>
+        <Header />
+        <div className="">
+          <Tabs value={tabIndex} onChange={handleChange}>
+            <Tab label="Create Account" />
+            <Tab label="Send Tx" />
+          </Tabs>
+          <div className="pt-8">
+            <TabPanel value={tabIndex} index={0}>
+              <CreateAccount />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={1}>
+              <SendTx />
+            </TabPanel>
           </div>
-        </main>
+        </div>
       </Layout>
     </>
   );
