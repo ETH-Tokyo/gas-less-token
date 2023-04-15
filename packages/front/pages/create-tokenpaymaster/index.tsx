@@ -6,7 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAccount as useWalletAddress } from "wagmi";
+import { useAccount } from "wagmi";
 
 import Layout from "@/components/layout/baseLayout";
 import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
@@ -19,37 +19,40 @@ export type FormInput = {
 
 const FactoryForm: FC = () => {
   const router = useRouter();
+  const { address } = useAccount();
 
   const deploy = useCallback(async (tokenSymbol: string) => {
     const { ethereum } = window;
-    const provider = new ethers.providers.JsonRpcProvider(ethereum as any);
-    const signer = provider.getSigner();
-    console.log(signer);
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum as any);
+      const signer = provider.getSigner();
+      const contractABI = TokenPaymasterABI;
+      const factory = new ethers.ContractFactory(
+        contractABI.abi,
+        contractABI.bytecode,
+        signer,
+      );
 
-    const contractABI = TokenPaymasterABI;
-    const factory = new ethers.ContractFactory(
-      contractABI.abi,
-      contractABI.bytecode,
-      signer,
-    );
-    console.log(factory);
+      const ENTRY_POINT_ADDRESS = process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS;
+      const ACCOUNT_FACTORY_ADDRESS =
+        process.env.NEXT_PUBLIC_SIMPLE_ACCOUNT_FACTORY_ADDRESS;
 
-    const ENTRY_POINT_ADDRESS = process.env.ENTRY_POINT_ADDRESS;
-    const ACCOUNT_FACTORY_ADDRESS = process.env.ACCOUNT_FACTORY_ADDRESS;
-    console.log(ENTRY_POINT_ADDRESS, ACCOUNT_FACTORY_ADDRESS);
-    const contract = await factory.deploy(
-      ACCOUNT_FACTORY_ADDRESS!,
-      tokenSymbol,
-      ENTRY_POINT_ADDRESS!,
-      100,
-      200,
-      300,
-    );
-    await contract.deployed();
-    console.log(
-      "コントラクトがデプロイされました。アドレス：",
-      contract.address,
-    );
+      const contract = await factory.deploy(
+        ACCOUNT_FACTORY_ADDRESS!,
+        tokenSymbol,
+        ENTRY_POINT_ADDRESS!,
+        100,
+        200,
+        300,
+      );
+      await contract.deployed();
+      console.log(
+        "コントラクトがデプロイされました。アドレス：",
+        contract.address,
+      );
+    } else {
+      console.log("メタマスクに接続してください");
+    }
   }, []);
 
   const {
@@ -116,8 +119,6 @@ const FactoryForm: FC = () => {
     }
   };
 
-  console.log(process.env);
-
   return (
     <div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
@@ -182,7 +183,6 @@ const FactoryForm: FC = () => {
 };
 
 const CreateTokenPaymaster: NextPage = () => {
-  const { address: walletAddress } = useWalletAddress();
   return (
     <>
       <Head>

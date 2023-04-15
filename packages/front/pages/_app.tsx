@@ -3,17 +3,13 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { AppProps } from "next/app";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { polygonMumbai } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 import "/styles/globals.css";
 
 const { chains, provider } = configureChains(
   [polygonMumbai],
-  [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || "" }),
-    publicProvider(),
-  ],
+  [publicProvider()],
 );
 
 const { connectors } = getDefaultWallets({
