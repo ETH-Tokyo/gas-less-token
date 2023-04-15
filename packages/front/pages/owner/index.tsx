@@ -1,13 +1,13 @@
-import { Alert, Button, TextField, Typography } from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import PaymasterCard from "@/components/card/paymasterCard";
 import Layout from "@/components/layout/baseLayout";
 import TokenPaymasterABI from "@/libs/abi/TokenPaymaster.json";
 
@@ -235,16 +235,8 @@ const FactoryForm: FC = () => {
           </Button>
         </div>
       </form>
-      {paymaster && (
-        <div>
-          <div>deployed paymaster address: {paymaster}</div>
-          <Link href={`/user/${paymaster}`} passHref>
-            <Button variant="contained" color="primary">
-              go to user page
-            </Button>
-          </Link>
-        </div>
-      )}
+
+      {paymaster && <PaymasterCard address={paymaster} />}
     </div>
   );
 };
