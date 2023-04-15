@@ -6,7 +6,7 @@ export const Header = () => {
   return (
     <div className="flex flex-row justify-between items-center mb-16">
       <div>
-        <Link href="/owner">
+        <Link href="/">
           <Image
             src="/logo/gasslesstoken.png"
             alt="gasslesstoken"
