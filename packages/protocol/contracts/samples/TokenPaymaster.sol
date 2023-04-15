@@ -24,10 +24,20 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
 
     address public immutable theFactory;
 
+    uint256 internal level0Rate;
+    uint256 internal level1Rate;
+    uint256 internal level2Rate;
+
+    // not on the list means level 0
+    mapping(address => uint256) internal levels;
+
     constructor(
         address accountFactory,
         string memory _symbol,
-        IEntryPoint _entryPoint
+        IEntryPoint _entryPoint,
+        uint256 _level0Rate,
+        uint256 _level1Rate,
+        uint256 _level2Rate
     ) ERC20(_symbol, _symbol) BasePaymaster(_entryPoint) {
         theFactory = accountFactory;
         //make it non-empty
@@ -35,6 +45,11 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
 
         //owner is allowed to withdraw tokens from the paymaster's balance
         _approve(address(this), msg.sender, type(uint).max);
+
+        // set rate
+        level0Rate = _level0Rate;
+        level1Rate = _level1Rate;
+        level2Rate = _level2Rate;
     }
 
     /**
@@ -44,6 +59,21 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
      */
     function mintTokens(address recipient, uint256 amount) external onlyOwner {
         _mint(recipient, amount);
+    }
+
+    /**
+     * get level and rate by address.
+     * @param target - address for target.
+     */
+    function getLevelAndRate(address target) external view returns (uint256 level, uint256 rate) {
+        level = levels[target];
+        if (level == 1) {
+            rate = level1Rate;
+        } else if (level == 2) {
+            rate = level2Rate;
+        } else {
+            rate = level0Rate;
+        }
     }
 
     /**
@@ -61,8 +91,14 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
 
     //Note: this method assumes a fixed ratio of token-to-eth. subclass should override to supply oracle
     // or a setter.
-    function getTokenValueOfEth(uint256 valueEth) internal view virtual returns (uint256 valueToken) {
-        return valueEth / 100;
+    function getTokenValueOfEth(address sender, uint256 valueEth) internal view virtual returns (uint256 valueToken) {
+        if (levels[sender] == 1) {
+            return valueEth / level1Rate;
+        } else if (levels[sender] == 2) {
+            return valueEth / level2Rate;
+        } else {
+            return valueEth / level0Rate;
+        }
     }
 
     /**
@@ -76,7 +112,7 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
         bytes32 /*userOpHash*/,
         uint256 requiredPreFund
     ) internal view override returns (bytes memory context, uint256 validationData) {
-        uint256 tokenPrefund = getTokenValueOfEth(requiredPreFund);
+        uint256 tokenPrefund = getTokenValueOfEth(userOp.sender, requiredPreFund);
 
         // verificationGasLimit is dual-purposed, as gas limit for postOp. make sure it is high enough
         // make sure that verificationGasLimit is high enough to handle postOp
@@ -110,8 +146,13 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
         //we don't really care about the mode, we just pay the gas with the user's tokens.
         (mode);
         address sender = abi.decode(context, (address));
-        uint256 charge = getTokenValueOfEth(actualGasCost + COST_OF_POST);
+        uint256 charge = getTokenValueOfEth(sender, actualGasCost + COST_OF_POST);
         //actualGasCost is known to be no larger than the above requiredPreFund, so the transfer should succeed.
         _transfer(sender, address(this), charge);
+
+        // level up
+        if (levels[sender] != 1) {
+            levels[sender] = 1;
+        }
     }
 }
