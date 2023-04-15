@@ -46,7 +46,7 @@ const UserPage: NextPage = () => {
             <Tab label="Create Account" />
             <Tab label="Send Tx" />
           </Tabs>
-          <div className="pt-8">
+          <div className="pt-8" style={{ width: "80%", margin: "0 auto" }}>
             <TabPanel value={tabIndex} index={0}>
               <CreateAccount />
             </TabPanel>

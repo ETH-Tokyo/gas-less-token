@@ -218,8 +218,9 @@ const FactoryForm: FC = () => {
           )}
         />
         <PopupAlerts status={sendStatus} />
-        <div className="mx-auto">
+        <div className="mx-auto mt-3">
           <Button
+            size="large"
             type="submit"
             variant="outlined"
             color="inherit"
@@ -249,7 +250,7 @@ const OwnerPage: NextPage = () => {
       <Layout pageTitle="owner">
         <Header />
         <main className="">
-          <div className="">
+          <div className="" style={{ width: "80%", margin: "0 auto" }}>
             <FactoryForm />
           </div>
         </main>

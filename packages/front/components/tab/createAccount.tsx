@@ -99,9 +99,10 @@ const CreateAccount: FC = () => {
           )}
         />
         <PopupAlerts status={sendStatus} />
-        <div className="mx-auto">
+        <div className="mx-auto mt-10">
           <Button
             type="submit"
+            size="large"
             variant="outlined"
             color="inherit"
             disabled={!!sendStatus}
