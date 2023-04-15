@@ -32,7 +32,7 @@ export const Layout: FC<Props> = ({ pageTitle, children }) => {
           <Link href="/create-account">
             <h3>(user) create account</h3>
           </Link>
-          <Link href="/send-tx">
+          <Link href="/send-tx/hoge">
             <h3>(user) send tx</h3>
           </Link>
         </div>
