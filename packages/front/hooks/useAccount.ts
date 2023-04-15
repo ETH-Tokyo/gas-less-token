@@ -99,7 +99,6 @@ const useAccount = (): Account => {
       provider,
     );
     const res = await tokenPaymasterContract.getLevelAndRate(account);
-    console.log(res);
 
     return { level: res.level.toNumber(), rate: res.rate.toNumber() };
   };
