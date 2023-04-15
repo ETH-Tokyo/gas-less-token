@@ -19,7 +19,6 @@ export type FormInput = {
 
 const FactoryForm: FC = () => {
   const router = useRouter();
-  const { address } = useAccount();
 
   const deploy = useCallback(async (tokenSymbol: string) => {
     const { ethereum } = window;
@@ -186,6 +185,7 @@ const FactoryForm: FC = () => {
 };
 
 const CreateTokenPaymaster: NextPage = () => {
+  const { address: walletAddress } = useAccount();
   return (
     <>
       <Head>
@@ -195,8 +195,6 @@ const CreateTokenPaymaster: NextPage = () => {
       <Layout pageTitle="createtokenpaymaster">
         <main className="">
           <div className="">
-            <ConnectButton />
-            {/* {walletAddress ? <FactoryForm /> : <ConnectButton />} */}
             <FactoryForm />
           </div>
         </main>
