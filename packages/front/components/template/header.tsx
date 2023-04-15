@@ -1,8 +1,13 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 export const Header = () => {
+  const router = useRouter();
+  const isOwner = useMemo(() => router.pathname === "/owner", []);
+
   return (
     <div className="flex flex-row justify-between items-center mb-16">
       <div>
@@ -15,7 +20,7 @@ export const Header = () => {
           />
         </Link>
       </div>
-      <ConnectButton />
+      {isOwner && <ConnectButton />}
     </div>
   );
 };
