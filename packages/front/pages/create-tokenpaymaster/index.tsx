@@ -120,7 +120,10 @@ const FactoryForm: FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col space-y-24">
+      <div className="flex justify-end">
+        <ConnectButton />
+      </div>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="token_symbol"
